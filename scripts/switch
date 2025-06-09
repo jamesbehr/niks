@@ -12,7 +12,7 @@ case "$(uname -a)" in
         ;;
     "Darwin "*)
         if command -v darwin-rebuild 2>&1 >/dev/null; then
-            darwin-rebuild switch --flake .
+            sudo darwin-rebuild switch --flake .
         else
             echo "Unable to find darwin-rebuild. Is nix-darwin is installed?"
             exit 1

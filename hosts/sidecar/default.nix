@@ -14,8 +14,6 @@
     };
   };
 
-  services.nix-daemon.enable = true;
-
   # Makes nix-darwin work with zsh. Only bash is enabled by default.
   programs.zsh.enable = true;
 
@@ -36,6 +34,7 @@
   };
 
   system = {
+    primaryUser = "james.behr";
     keyboard = {
       enableKeyMapping = true;
       remapCapsLockToEscape = true;
@@ -43,6 +42,8 @@
   };
 
   nixpkgs.config.allowUnfree = true;
+
+  ids.gids.nixbld = 30000;
 
   system.stateVersion = 5;
 }

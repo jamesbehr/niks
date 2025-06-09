@@ -60,7 +60,7 @@ in
         expireDuplicatesFirst = true;
       };
       defaultKeymap = "viins";
-      initExtra = ''
+      initContent = ''
         # Allow backspace/CTRL-H to delete past the point insert mode was entered
         bindkey -M viins '^?' backward-delete-char
         bindkey -M viins '^H' backward-delete-char

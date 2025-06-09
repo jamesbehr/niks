@@ -31,7 +31,7 @@
           home-manager.nixosModules.home-manager
           {
             nixpkgs.overlays = [
-              nur.overlay
+              nur.overlays.default
               (import ./overlays/kitty-themes.nix)
             ];
             home-manager.useGlobalPkgs = true;
@@ -85,7 +85,7 @@
           home-manager.darwinModules.home-manager
           {
             nixpkgs.overlays = [
-              nur.overlay
+              nur.overlays.default
               (import ./overlays/kitty-themes.nix)
             ];
             home-manager.useGlobalPkgs = true;
