@@ -100,7 +100,8 @@
                 };
                 nvim.enable = true;
                 desktop = {
-                  kitty.enable = true;
+                  kitty.enable = false;
+                  ghostty.enable = true;
                   browser.enable = true;
                 };
                 dev = {

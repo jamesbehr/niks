@@ -30,7 +30,7 @@
     enable = true;
     onActivation.autoUpdate = true;
     brews = [ "hashcat" ];
-    casks = [ "obs" "rancher" "postman" "dbeaver-community" "steam" "firefox" ];
+    casks = [ "obs" "rancher" "postman" "dbeaver-community" "steam" "firefox" "ghostty" ];
   };
 
   system = {
@@ -46,4 +46,6 @@
   ids.gids.nixbld = 30000;
 
   system.stateVersion = 5;
+
+  fonts.packages = [pkgs.cascadia-code];
 }
