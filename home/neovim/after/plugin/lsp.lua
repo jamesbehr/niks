@@ -25,78 +25,89 @@ local organize_imports = function (client, timeout_ms)
     end
 end
 
-local on_attach = function (client, bufnr)
-    local nmap = keymap.bind("n", {noremap=true, silent=true, buffer=bufnr})
+local on_attach = function(opts)
+    local defaults = {
+        enable_formatting = true,
+    }
 
-    nmap("gD", vim.lsp.buf.declaration)
-    nmap("gd", vim.lsp.buf.definition)
-    nmap("K", vim.lsp.buf.hover)
-    nmap("gi", vim.lsp.buf.implementation)
-    nmap("<C-k>", vim.lsp.buf.signature_help)
-    nmap("<leader>wa", vim.lsp.buf.add_workspace_folder)
-    nmap("<leader>wr", vim.lsp.buf.remove_workspace_folder)
-    nmap("<leader>wl", function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end)
-    nmap("<leader>D", vim.lsp.buf.type_definition)
-    nmap("<leader>rn", vim.lsp.buf.rename)
-    nmap("<leader>ca", vim.lsp.buf.code_action)
-    nmap("gr", vim.lsp.buf.references)
+    opts = vim.tbl_extend("force", defaults, opts or {})
 
-    vim.api.nvim_create_autocmd({"BufWritePre"}, {
-        buffer = bufnr,
-        callback = function ()
-            organize_imports(client, 1001)
-            vim.lsp.buf.format({async=false})
-        end,
-    })
+    return function (client, bufnr)
+        local nmap = keymap.bind("n", {noremap=true, silent=true, buffer=bufnr})
+
+        nmap("gD", vim.lsp.buf.declaration)
+        nmap("gd", vim.lsp.buf.definition)
+        nmap("K", vim.lsp.buf.hover)
+        nmap("gi", vim.lsp.buf.implementation)
+        nmap("<C-k>", vim.lsp.buf.signature_help)
+        nmap("<leader>wa", vim.lsp.buf.add_workspace_folder)
+        nmap("<leader>wr", vim.lsp.buf.remove_workspace_folder)
+        nmap("<leader>wl", function()
+            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+        end)
+        nmap("<leader>D", vim.lsp.buf.type_definition)
+        nmap("<leader>rn", vim.lsp.buf.rename)
+        nmap("<leader>ca", vim.lsp.buf.code_action)
+        nmap("gr", vim.lsp.buf.references)
+
+        vim.api.nvim_create_autocmd({"BufWritePre"}, {
+            buffer = bufnr,
+            callback = function ()
+                organize_imports(client, 1001)
+
+                if opts.enable_formatting then
+                    vim.lsp.buf.format({async=false})
+                end
+            end,
+        })
+    end
 end
 
 if niks["dev"]["ruby"]["enable"] then
     config["solargraph"].setup({
-        on_attach = on_attach,
+        on_attach = on_attach(),
     })
 end
 
 if niks["dev"]["go"]["enable"] then
     config["gopls"].setup({
-        on_attach = on_attach,
+        on_attach = on_attach(),
     })
 end
 
 if niks["dev"]["terraform"]["enable"] then
     config["terraformls"].setup({
-        on_attach = on_attach,
+        on_attach = on_attach(),
     })
 end
 
 if niks["dev"]["nix"]["enable"] then
     config["nil_ls"].setup({
-        on_attach = on_attach,
+        on_attach = on_attach(),
     })
 end
 
 if niks["dev"]["haskell"]["enable"] then
     config["hls"].setup({
-        on_attach = on_attach,
+        on_attach = on_attach(),
     })
 end
 
 if niks["dev"]["node"]["enable"] then
     config["ts_ls"].setup({
-        on_attach = on_attach,
+        on_attach = on_attach(),
     })
 end
 
 if niks["dev"]["rust"]["enable"] then
     config["rust_analyzer"].setup({
-        on_attach = on_attach,
+        on_attach = on_attach(),
     })
 end
 
 if niks["dev"]["zig"]["enable"] then
     config["zls"].setup({
-        on_attach = on_attach,
+        on_attach = on_attach(),
     })
 end
 
@@ -107,7 +118,9 @@ if niks["dev"]["scala"]["enable"] then
         useGlobalExecutable = true
     }
 
-    metals_config.on_attach = on_attach
+    metals_config.on_attach = on_attach({
+        enable_formatting = false
+    })
 
     local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
     vim.api.nvim_create_autocmd("FileType", {
