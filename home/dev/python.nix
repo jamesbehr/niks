@@ -9,7 +9,7 @@ in
   config = mkIf cfg.enable {
     home = {
       packages = with pkgs; [
-        python39
+        python312
       ];
 
       sessionVariables = { };
