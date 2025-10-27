@@ -9,7 +9,11 @@
     '';
     gc = {
       automatic = true;
-      interval = { Weekday = 0; Hour = 0; Minute = 0; };
+      interval = {
+        Weekday = 0;
+        Hour = 0;
+        Minute = 0;
+      };
       options = "--delete-older-than 30d";
     };
   };
@@ -29,12 +33,17 @@
   homebrew = {
     enable = true;
     onActivation.autoUpdate = true;
-    brews = [ "hashcat" ];
-    casks = [ "obs" "rancher" "postman" "dbeaver-community" "steam" "firefox" "ghostty" ];
+    brews = [ ];
+    casks = [
+      "firefox"
+      "ghostty"
+      "microsoft-teams"
+      "bitwarden"
+    ];
   };
 
   system = {
-    primaryUser = "james.behr";
+    primaryUser = "jamesbehr";
     keyboard = {
       enableKeyMapping = true;
       remapCapsLockToEscape = true;
@@ -43,9 +52,9 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  ids.gids.nixbld = 30000;
+  ids.gids.nixbld = 350;
 
   system.stateVersion = 5;
 
-  fonts.packages = [pkgs.cascadia-code];
+  fonts.packages = [ pkgs.cascadia-code ];
 }

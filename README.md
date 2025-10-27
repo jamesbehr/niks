@@ -20,8 +20,9 @@ This should be done before `nixos-rebuild switch`.
 
 ### macOS
 To get started, an installation of Nix is required.
+The easiest way is to install Lix.
 
-    sh <(curl -L https://nixos.org/nix/install)
+    curl -sSf -L https://install.lix.systems/lix | sh -s -- install
 
 nix-darwin also manages Homebrew, but this must be installed (if you have not
 done so already) before this will work.
@@ -35,27 +36,10 @@ Now clone the repository.
 You might not have access to Git if this is a fresh machine. In this case you
 can just use `nix-shell -p git` to spin up a shell that has `git` installed.
 
-The nix-darwin installer doesn't work with flakes out of the box, so you can
-bootstrap it.
+You won't have access to `darwin-rebuild` right away, so run the first install as follows.
 
     cd ~/niks
-    nix build --extra-experimental-features "nix-command flakes" .\#darwinConfigurations.<hostname>.system
-
-If this fails, you probably don't have a `/run` directory. macOS has a
-read-only root directory, so you'll need to run the following. The following
-only applies on macOS Big Sur (macOS 11) or later.
-
-    printf 'run\tprivate/var/run\n' | sudo tee -a /etc/synthetic.conf
-    /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t
-
-Now you should be able to run the `nix build` command again and have it
-complete successfully.
-
-The bootstrap process creates a `darwin-rebuild` binary that you can then use
-to initially install the flake. This will correctly select the correct
-configuration based on you hostname, just like the NixOS command.
-
-    ./result/sw/bin/darwin-rebuild switch --flake .
+    sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .
 
 After this, the `darwin-rebuild` binary should be in your PATH, so you can just
 run the following to update your system after making changes to the
