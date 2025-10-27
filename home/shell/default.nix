@@ -1,7 +1,13 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 with lib;
-let user = config.niks.user;
+let
+  user = config.niks.user;
 in
 {
   options.niks.user = {
@@ -37,6 +43,16 @@ in
       g = "gitdefault";
       v = "visual";
       e = "editor";
+    };
+
+    programs.gpg = {
+      enable = true;
+    };
+
+    services.gpg-agent = {
+      enable = true;
+      enableZshIntegration = true;
+      enableSshSupport = true;
     };
 
     programs.ssh = {
@@ -95,7 +111,19 @@ in
       '';
     };
 
-    home.packages = with pkgs; [ git-open unzip p7zip ffmpeg tree age killall graphviz imagemagick asciinema yq-go ];
+    home.packages = with pkgs; [
+      git-open
+      unzip
+      p7zip
+      ffmpeg
+      tree
+      age
+      killall
+      graphviz
+      imagemagick
+      asciinema
+      yq-go
+    ];
 
     programs.git = {
       enable = true;
@@ -138,7 +166,11 @@ in
         # Clone shorthands e.g. git clone gh:NixOS/nix -> git clone ssh://git@github.com/NixOS/nix
         url = {
           "ssh://git@github.com/" = {
-            insteadOf = [ "github:" "gh:" "git://github.com/" ];
+            insteadOf = [
+              "github:"
+              "gh:"
+              "git://github.com/"
+            ];
           };
         };
       };
