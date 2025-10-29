@@ -1,10 +1,16 @@
-{ config, pkgs, modulesPath, lib, nixpkgs, ... }:
+{
+  config,
+  pkgs,
+  modulesPath,
+  lib,
+  nixpkgs,
+  ...
+}:
 
 {
-  imports =
-    [
-      (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
+  ];
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
@@ -21,67 +27,71 @@
     "nls_iso8859_1"
   ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" "i2c-dev" ];
+  boot.kernelModules = [
+    "kvm-intel"
+    "i2c-dev"
+  ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    {
-      device = "/dev/disk/by-label/nixos";
-      fsType = "btrfs";
-      options = [ "subvol=root" "noatime" ];
-    };
-
-  boot.initrd.systemd = {
-    enable = true;
-    mounts = [
-      {
-        what = "/dev/disk/by-label/usbkey";
-        where = "/key";
-        type = "vfat";
-        options = "ro,nofail";
-      }
+  fileSystems."/" = {
+    device = "/dev/disk/by-label/nixos";
+    fsType = "btrfs";
+    options = [
+      "subvol=root"
+      "noatime"
     ];
   };
 
-  boot.initrd.luks.devices."root" = {
-    keyFile = "/key/root.key";
-    device = "/dev/disk/by-label/root";
-    keyFileTimeout = 10;
+  boot.initrd = {
+    systemd = {
+      enable = true;
+    };
+
+    luks = {
+      devices = {
+        "root" = {
+          device = "/dev/disk/by-label/root";
+          crypttabExtraOpts = [ "fido2-device=auto" ];
+        };
+
+        "sata" = {
+          keyFile = "/key/sata.key";
+          device = "/dev/disk/by-label/sata";
+          crypttabExtraOpts = [ "nofail" ];
+          keyFileTimeout = 10;
+        };
+      };
+    };
   };
 
-  boot.initrd.luks.devices."sata" = {
-    keyFile = "/key/sata.key";
-    device = "/dev/disk/by-label/sata";
-    crypttabExtraOpts = [ "nofail" ];
-    keyFileTimeout = 10;
+  fileSystems."/mnt/media" = {
+    device = "/dev/disk/by-label/media";
+    fsType = "ext4";
+    options = [ "nofail" ];
   };
 
-  fileSystems."/mnt/media" =
-    {
-      device = "/dev/disk/by-label/media";
-      fsType = "ext4";
-      options = [ "nofail" ];
-    };
+  fileSystems."/home" = {
+    device = "/dev/disk/by-label/nixos";
+    fsType = "btrfs";
+    options = [
+      "subvol=home"
+      "noatime"
+    ];
+  };
 
-  fileSystems."/home" =
-    {
-      device = "/dev/disk/by-label/nixos";
-      fsType = "btrfs";
-      options = [ "subvol=home" "noatime" ];
-    };
+  fileSystems."/nix" = {
+    device = "/dev/disk/by-label/nixos";
+    fsType = "btrfs";
+    options = [
+      "subvol=nix"
+      "noatime"
+    ];
+  };
 
-  fileSystems."/nix" =
-    {
-      device = "/dev/disk/by-label/nixos";
-      fsType = "btrfs";
-      options = [ "subvol=nix" "noatime" ];
-    };
-
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-label/boot";
-      fsType = "vfat";
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-label/boot";
+    fsType = "vfat";
+  };
 
   swapDevices = [ ];
 
@@ -254,7 +264,13 @@
 
   users.users.james = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "jackaudio" "dialout" "docker" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "jackaudio"
+      "dialout"
+      "docker"
+    ];
     description = "James";
     shell = pkgs.zsh;
   };

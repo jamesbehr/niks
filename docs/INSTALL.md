@@ -90,6 +90,12 @@ Mount your subvolumes. We will also mount the boot partition at /boot.
     mount -o subvol=nix,noatime /dev/mapper/root /mnt/nix
     mount /dev/nvme0n1p2 /mnt/boot
 
+# Enrolling a FIDO2 Token
+You can add a FIDO2 token (e.g. YubiKey) as a key slot, so you don't need a
+passphrase on boot.
+
+    sudo systemd-cryptenroll --fido2-device=auto /dev/disk/by-label/root
+
 # Configure and Install NixOS
 Generate your Nix config at /mnt/etc/nixos/configuration.nix
 
